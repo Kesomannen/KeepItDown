@@ -1,0 +1,9 @@
+{
+    "name": "KeepItDown",
+    "version_number": "1.0.3",
+    "website_url": "https://github.com/MaxWasUnavailable/MoonOfTheDay",
+    "description": "This is a description for a mod. 250 characters max",
+    "dependencies": [
+        "LethalAPI-1.0.0"
+    ]
+}

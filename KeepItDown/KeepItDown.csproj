@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <AssemblyName>KeepItDown</AssemblyName>
+        <Description>Volume tuning mod for Lethal Company</Description>
+        <Version>1.0.0</Version>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
+        <RootNamespace>KeepItDown</RootNamespace>
+        <Company>Kesomannen</Company>
+        <Product>KeepItDown</Product>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BepInEx.Analyzers" Version="1.0.8" PrivateAssets="all" />
+      <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+      <PackageReference Include="BepInEx.PluginInfoProps" Version="1.1.0" />
+      <PackageReference Include="UnityEngine.Modules" Version="2022.3.9" IncludeAssets="compile" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="Assembly-CSharp">
+            <HintPath>References/Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Netcode.Runtime">
+            <HintPath>References/Unity.Netcode.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="LethalSettings">
+            <HintPath>References/LethalSettings.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+</Project>
