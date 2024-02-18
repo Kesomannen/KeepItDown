@@ -1,9 +1,9 @@
 {
     "name": "KeepItDown",
     "version_number": "1.0.3",
-    "website_url": "https://github.com/MaxWasUnavailable/MoonOfTheDay",
-    "description": "This is a description for a mod. 250 characters max",
+    "website_url": "https://github.com/Kesomannen/KeepItDown",
+    "description": "Simple volume tuning mod.",
     "dependencies": [
-        "LethalAPI-1.0.0"
+        "willis81808-LethalSettings-1.4.0"
     ]
 }
