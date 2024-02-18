@@ -25,17 +25,34 @@ public class KeepItDownPlugin : BaseUnityPlugin {
 
         Harmony.CreateAndPatchAll(typeof(Patches));
 
-        var menuComponents = Config.Volumes.Select(kvp => new SliderComponent {
-            Text = $"{kvp.Key} Volume",
-            ShowValue = true,
-            WholeNumbers = true,
-            MinValue = 0,
-            MaxValue = 100,
-            Value = kvp.Value.RawValue,
-            OnValueChanged = (_, value) => kvp.Value.RawValue = value
-        })
+        var menuComponents = Config.Volumes.Select(kvp => {
+                var config = kvp.Value;
+                var component = new SliderComponent {
+                    Text = $"{kvp.Key} Volume",
+                    MinValue = 0,
+                    MaxValue = 100,
+                    Value = config.RawValue,
+                    OnValueChanged = (_, value) => config.RawValue = value
+                };
+
+                config.OnChanged += (rawValue, _) => {
+                    if (!Mathf.Approximately(component.Value, rawValue)) {
+                        component.Value = rawValue;
+                    }
+                };
+
+                return component;
+            })
             .OrderBy(slider => slider.Text)
             .Cast<MenuComponent>()
+            .Append(new ButtonComponent {
+                Text = "Reset",
+                OnClick = _ => {
+                    foreach (var volumeConfig in Config.Volumes.Values) {
+                        volumeConfig.NormalizedValue = 0.5f;
+                    }
+                },
+            })
             .ToArray();
         
         ModMenu.RegisterMod(new ModMenu.ModSettingsConfig {

@@ -65,6 +65,10 @@ public class VolumeConfig : IDisposable {
         set => _configEntry.Value = value;
     }
     
+    public event ChangedEventHandler OnChanged;
+    
+    public delegate void ChangedEventHandler(float rawValue, float normalizedValue); 
+    
     internal VolumeConfig(ConfigEntry<float> configEntry) {
         _configEntry = configEntry;
 
@@ -92,6 +96,8 @@ public class VolumeConfig : IDisposable {
             
             ActivateBinding(in binding);
         }
+        
+        OnChanged?.Invoke(RawValue, NormalizedValue);
     }
 
     /// <summary>
