@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using UnityEngine;
 
 namespace KeepItDown; 
 
@@ -7,9 +6,10 @@ internal static class Patches {
     [HarmonyPostfix]
     [HarmonyPatch(typeof(NoisemakerProp), nameof(NoisemakerProp.Start))]
     static void StartPatch(NoisemakerProp __instance) {
-        var name = __instance.gameObject.name.Replace("(Clone)", "").Replace("Item", "");
-        KeepItDownPlugin.Bind(name, __instance.maxLoudness, v => __instance.maxLoudness = v);
-        KeepItDownPlugin.Bind(name, __instance.minLoudness, v => __instance.minLoudness = v);
+        var gameObject = __instance.gameObject;
+        var name = gameObject.name.Replace("(Clone)", "").Replace("Item", "");
+        KeepItDownPlugin.Bind(name, gameObject, __instance.maxLoudness, v => __instance.maxLoudness = v);
+        KeepItDownPlugin.Bind(name, gameObject, __instance.minLoudness, v => __instance.minLoudness = v);
     }
     
     [HarmonyPostfix]
@@ -36,5 +36,17 @@ internal static class Patches {
         if (__instance is RemoteProp remoteProp) {
             KeepItDownPlugin.BindAudioSource("Remote", remoteProp.remoteAudio);
         }
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(HUDManager), "OnEnable")]
+    static void OnEnablePatch(HUDManager __instance) {
+        KeepItDownPlugin.BindAudioSource("HUD", __instance.UIAudio);
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(HUDManager), "OnDisable")]
+    static void OnDisablePatch(HUDManager __instance) {
+        KeepItDownPlugin.RemoveBindings("HUD", __instance.UIAudio.gameObject);
     }
 }
