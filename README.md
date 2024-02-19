@@ -6,7 +6,7 @@ Simple volume tuning mod for Lethal Company. The settings can be edited either t
 
 ## Installation
 
-Go to [the thunderstore page](https://thunderstore.io/package/Kesomannen/KeepItDown/) to get the latest version. If you choose to do download manually, simply add `KeepItDown.dll` to your `/BepInEx/plugins` folder under the game directory. Note that `LethalSettings` is required as a dependency.
+Go to [the thunderstore page](https://thunderstore.io/c/lethal-company/p/Kesomannen/KeepItDown/) to get the latest version. If you choose to do download manually, simply add `KeepItDown.dll` to your `/BepInEx/plugins` folder under the game directory. Note that `LethalSettings` is required as a dependency.
 
 ## For Developers
 
