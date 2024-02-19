@@ -45,11 +45,11 @@ public class KeepItDownPlugin : BaseUnityPlugin {
             })
             .OrderBy(slider => slider.Text)
             .Cast<MenuComponent>()
-            .Append(new ButtonComponent {
+            .Prepend(new ButtonComponent {
                 Text = "Reset",
                 OnClick = _ => {
                     foreach (var volumeConfig in Config.Volumes.Values) {
-                        volumeConfig.NormalizedValue = 0.5f;
+                        volumeConfig.NormalizedValue = 1f;
                     }
                 },
             })
