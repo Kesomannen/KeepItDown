@@ -19,7 +19,7 @@ public class MyPlugin : BaseUnityPlugin {
   ...
 }
 ```
-3. For each config, call `KeepItDownPlugin.AddConfig` with a unique key.
+2. For each config, call `KeepItDownPlugin.AddConfig` with a unique key.
 ```cs
 public class MyPlugin : BaseUnityPlugin {
   void Awake() {
@@ -27,7 +27,7 @@ public class MyPlugin : BaseUnityPlugin {
   }
 }
 ```
-4. Finally, bind AudioSources with `KeepItDownPlugin.BindAudioSource`, to have their volumes synced with the config. Config values are relative (from 0-200% of the base volume), so you can tweak the AudioSource's volume freely.
+3. Finally, bind AudioSources with `KeepItDownPlugin.BindAudioSource`, to have their volumes synced with the config. Config values are relative (from 0-200% of the base volume), so you can tweak the AudioSource's volume freely.
 ```cs
 public class CowEnemy : EnemyAI {
   [SerializeField] AudioSource _mooAudioSource;

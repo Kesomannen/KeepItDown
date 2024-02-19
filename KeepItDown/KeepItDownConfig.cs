@@ -7,27 +7,18 @@ using UnityEngine;
 namespace KeepItDown; 
 
 public class KeepItDownConfig {
-    readonly Dictionary<string, VolumeConfig> _volumes;
-    readonly ConfigFile _cfg;
+    readonly Dictionary<string, VolumeConfig> _volumes = new();
+    readonly ConfigFile _mainCfg;
     
     public IReadOnlyDictionary<string, VolumeConfig> Volumes => _volumes;
 
-    internal KeepItDownConfig(ConfigFile cfg) {
-        _cfg = cfg;
-        _volumes = new [] {
-            "Airhorn",
-            "Boombox",
-            "CashRegister",
-            "Remote",
-            "Flashlight",
-            "Walkie-talkie",
-            "HUD"
-        }.ToDictionary(name => name, name => CreateVolumeConfig(cfg, name));
+    internal KeepItDownConfig(ConfigFile mainCfg) {
+        _mainCfg = mainCfg;
     }
 
-    static VolumeConfig CreateVolumeConfig(ConfigFile cfg, string key) {
-        return new VolumeConfig(cfg.Bind(
-            "Volume",
+    static VolumeConfig CreateVolumeConfig(ConfigFile cfg, string key, string section) {
+        return new VolumeConfig(key, cfg.Bind(
+            section,
             $"{key}Volume",
             50f,
             $"Volume of the {key.ToLower()} sound (0-100). Defaults to 50."
@@ -38,14 +29,16 @@ public class KeepItDownConfig {
     /// Adds a new volume config to the config file.
     /// </summary>
     /// <param name="key">A unique key of the config.</param>
+    /// <param name="section">The section of the config file. Usually your mod's name.</param>
+    /// <param name="cfg">The config file to use. Defaults to KeepItDown's config file.</param>
     /// <returns>Whether or not the config was successfully added.</returns>
-    public bool AddVolumeConfig(string key) {
+    public bool AddVolumeConfig(string key, string section, ConfigFile cfg = null) {
         if (_volumes.ContainsKey(key)) {
             KeepItDownPlugin.Instance.Logger.LogWarning($"Volume config for {key} already exists!");
             return false;
         }
         
-        _volumes[key] = CreateVolumeConfig(_cfg, key);
+        _volumes[key] = CreateVolumeConfig(cfg ?? _mainCfg, key, section);
         return true;
     }
     
@@ -53,21 +46,22 @@ public class KeepItDownConfig {
     /// Adds multiple volume configs to the config file.
     /// </summary>
     /// <param name="keys">Unique keys of the configs.</param>
+    /// <param name="section">The section of the config file. Usually your mod's name.</param>
+    /// <param name="cfg">The config file to use. Defaults to KeepItDown's config file.</param>
     /// <returns>Whether or not all configs were successfully added.</returns>
-    public bool AddVolumeConfigs(IEnumerable<string> keys) {
-        return keys.Select(AddVolumeConfig).All(x => x);
+    public bool AddVolumeConfigs(IEnumerable<string> keys, string section, ConfigFile cfg = null) {
+        return keys.Select(key => AddVolumeConfig(key, section, cfg)).All(x => x);
     }
 }
 
 /// <summary>
-/// A volume configuration entry. It is at its simplest a wrapper
-/// around a <see cref="ConfigEntry{T}"/> with some additional
-/// functionality.
+/// A volume configuration entry. It is essentially a wrapper around a
+/// <see cref="ConfigEntry{T}"/> with some extra functionality.
 /// </summary>
 public class VolumeConfig : IDisposable {
     readonly ConfigEntry<float> _configEntry;
     readonly List<Binding> _bindings = new();
-    
+
     bool _isDisposed;
     
     /// <summary>
@@ -87,6 +81,9 @@ public class VolumeConfig : IDisposable {
         set => _configEntry.Value = value;
     }
     
+    public string Key { get; }
+    public string Section => _configEntry.Definition.Section;
+
     /// <summary>
     /// Invoked when the volume value changes.
     /// </summary>
@@ -95,9 +92,10 @@ public class VolumeConfig : IDisposable {
     /// <summary>
     /// A delegate for the <see cref="OnChanged"/> event.
     /// </summary>
-    public delegate void ChangedEventHandler(float rawValue, float normalizedValue); 
+    public delegate void ChangedEventHandler(VolumeConfig config, float rawValue, float normalizedValue); 
     
-    internal VolumeConfig(ConfigEntry<float> configEntry) {
+    internal VolumeConfig(string key, ConfigEntry<float> configEntry) {
+        Key = key;
         _configEntry = configEntry;
 
         _configEntry.SettingChanged += SettingChangedEventHandler;
@@ -125,7 +123,7 @@ public class VolumeConfig : IDisposable {
             ActivateBinding(in binding);
         }
         
-        OnChanged?.Invoke(RawValue, NormalizedValue);
+        OnChanged?.Invoke(this, RawValue, NormalizedValue);
     }
 
     /// <summary>

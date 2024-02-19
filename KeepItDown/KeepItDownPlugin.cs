@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using LethalSettings.UI;
@@ -22,57 +23,29 @@ public class KeepItDownPlugin : BaseUnityPlugin {
         Instance = this;
         
         Config = new KeepItDownConfig(base.Config);
-
-        Harmony.CreateAndPatchAll(typeof(Patches));
-
-        var menuComponents = Config.Volumes.Select(kvp => {
-                var config = kvp.Value;
-                var component = new SliderComponent {
-                    Text = $"{kvp.Key} Volume",
-                    MinValue = 0,
-                    MaxValue = 100,
-                    Value = config.RawValue,
-                    OnValueChanged = (_, value) => config.RawValue = value
-                };
-
-                config.OnChanged += (rawValue, _) => {
-                    if (!Mathf.Approximately(component.Value, rawValue)) {
-                        component.Value = rawValue;
-                    }
-                };
-
-                return component;
-            })
-            .OrderBy(slider => slider.Text)
-            .Cast<MenuComponent>()
-            .Prepend(new ButtonComponent {
-                Text = "Reset",
-                OnClick = _ => {
-                    foreach (var volumeConfig in Config.Volumes.Values) {
-                        volumeConfig.NormalizedValue = 1f;
-                    }
-                },
-            })
-            .ToArray();
+        Config.AddVolumeConfigs(new[] {
+            "Airhorn",
+            "Boombox",
+            "CashRegister",
+            "Remote",
+            "Flashlight",
+            "Walkie-talkie",
+            "Scan"
+        }, "Vanilla");
         
-        ModMenu.RegisterMod(new ModMenu.ModSettingsConfig {
-            Name = PluginInfo.PLUGIN_NAME,
-            Id = PluginInfo.PLUGIN_GUID,
-            Version = PluginInfo.PLUGIN_VERSION,
-            MenuComponents = menuComponents
-        }, true, true);
+        UI.Initialize(Config);
+        Harmony.CreateAndPatchAll(typeof(Patches));
         
         Logger.LogInfo($"{PluginInfo.PLUGIN_GUID} is loaded!");
     }
 
-    /// <summary>
-    /// Adds a new volume config.
-    /// </summary>
-    /// <param name="key">
-    /// The key of the config, used later for referencing. Must be unique.</param>
-    /// <returns>Whether or not the config was successfully created.</returns>
-    public static bool AddConfig(string key) {
-        return Instance.Config.AddVolumeConfig(key);
+    /// <inheritdoc cref="KeepItDownConfig.AddVolumeConfig"/>
+    public static bool AddConfig(string key, string section, ConfigFile cfg = null) {
+        return Instance.Config.AddVolumeConfig(key, section, cfg);
+    }
+    
+    public static bool TryGetConfig(string key, out VolumeConfig config) {
+        return Instance.Config.Volumes.TryGetValue(key, out config);
     }
     
     /// <summary>
@@ -88,7 +61,7 @@ public class KeepItDownPlugin : BaseUnityPlugin {
     /// <param name="volumeSetter">An action to set the volume property (not normalized).</param>
     /// <returns>Whether or not the binding was successfully created.</returns>
     public static bool Bind(string key, GameObject gameObject, float baseVolume, Action<float> volumeSetter) {
-        if (!Instance.Config.Volumes.TryGetValue(key, out var volumeConfig)) {
+        if (!TryGetConfig(key, out var volumeConfig)) {
             Instance.Logger.LogWarning($"Trying to bind volume config for {key}, but it doesn't exist");
             return false;
         }
@@ -114,7 +87,7 @@ public class KeepItDownPlugin : BaseUnityPlugin {
     /// <param name="gameObject">The target GameObject.</param>
     /// <returns>Whether or not the bindings were successfully removed.</returns>
     public static bool RemoveBindings(string key, GameObject gameObject) {
-        if (!Instance.Config.Volumes.TryGetValue(key, out var volumeConfig)) {
+        if (!TryGetConfig(key, out var volumeConfig)) {
             Instance.Logger.LogWarning($"Trying to remove volume config bindings for {key}, but it doesn't exist");
             return false;
         }

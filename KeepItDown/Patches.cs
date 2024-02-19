@@ -37,16 +37,16 @@ internal static class Patches {
             KeepItDownPlugin.BindAudioSource("Remote", remoteProp.remoteAudio);
         }
     }
-    
+
     [HarmonyPostfix]
     [HarmonyPatch(typeof(HUDManager), "OnEnable")]
     static void OnEnablePatch(HUDManager __instance) {
-        KeepItDownPlugin.BindAudioSource("HUD", __instance.UIAudio);
+        KeepItDownPlugin.BindAudioSource("Scan", __instance.UIAudio);
     }
     
     [HarmonyPostfix]
     [HarmonyPatch(typeof(HUDManager), "OnDisable")]
     static void OnDisablePatch(HUDManager __instance) {
-        KeepItDownPlugin.RemoveBindings("HUD", __instance.UIAudio.gameObject);
+        KeepItDownPlugin.RemoveBindings("Scan", __instance.UIAudio.gameObject);
     }
 }
