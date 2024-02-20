@@ -47,7 +47,7 @@ internal static class UI {
         }, true, true);
     }
 
-    public static void FindSliders() {
+    public static void FindSliderGameObjects() {
         var sliderComponentObjectType = Type.GetType("LethalSettings.UI.Components.SliderComponentObject, LethalSettings");
         var viewport = _modMenuConfig.GetPropertyValue<GameObject>("Viewport");
 
@@ -105,8 +105,8 @@ internal static class UI {
     }
 
     static readonly Regex _camelCaseRegex = new("([a-z])([A-Z])");
-    
-    public static string NicifyName(string name) {
+
+    static string NicifyName(string name) {
         return _camelCaseRegex.Replace(name, "$1 $2");
     }
 }

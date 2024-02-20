@@ -38,7 +38,7 @@ public class KeepItDownPlugin : BaseUnityPlugin {
 
     IEnumerator Start() {
         yield return null;
-        UI.FindSliders();
+        UI.FindSliderGameObjects();
     }
 
     /// <inheritdoc cref="KeepItDownConfig.AddVolumeConfig"/>

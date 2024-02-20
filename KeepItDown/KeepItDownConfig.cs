@@ -90,7 +90,7 @@ public class VolumeConfig : IDisposable {
     public event ChangedEventHandler OnChanged;
     
     /// <summary>
-    /// A delegate for the <see cref="OnChanged"/> event.
+    /// Delegate for the <see cref="OnChanged"/> event.
     /// </summary>
     public delegate void ChangedEventHandler(VolumeConfig config, float rawValue, float normalizedValue); 
     
