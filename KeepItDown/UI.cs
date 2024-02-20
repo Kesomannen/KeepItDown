@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using LethalSettings.UI;
@@ -12,9 +13,12 @@ internal static class UI {
     const string Guid = PluginInfo.PLUGIN_GUID;
     const string Version = PluginInfo.PLUGIN_VERSION;
     const string Description = "Volume control for various sounds in the game.";
+
+    static ModMenu.ModSettingsConfig _modMenuConfig;
     
     static readonly Dictionary<string, SliderComponent> _sliders = new();
-    
+    static readonly Dictionary<string, GameObject> _sliderGameObjects = new();
+
     public static void Initialize(KeepItDownConfig config) {
         var sliders = config.Volumes.Values.Select(CreateSlider).OrderBy(slider => slider.Text);
 
@@ -34,13 +38,25 @@ internal static class UI {
         };
         components.AddRange(sliders);
         
-        ModMenu.RegisterMod(new ModMenu.ModSettingsConfig {
+        ModMenu.RegisterMod(_modMenuConfig = new ModMenu.ModSettingsConfig {
             Name = Name,
             Id = Guid,
             Version = Version,
             Description = Description,
             MenuComponents = components.ToArray()
         }, true, true);
+    }
+
+    public static void FindSliders() {
+        var sliderComponentObjectType = Type.GetType("LethalSettings.UI.Components.SliderComponentObject, LethalSettings");
+        var viewport = _modMenuConfig.GetPropertyValue<GameObject>("Viewport");
+
+        var slierComponentObjects = viewport.GetComponentsInChildren(sliderComponentObjectType);
+        foreach (var sliderObject in slierComponentObjects) {
+            var sliderComponent = sliderObject.GetFieldValue<SliderComponent>("component");
+            var key = _sliders.First(kvp => kvp.Value == sliderComponent).Key;
+            _sliderGameObjects[key] = sliderObject.gameObject;
+        }
     }
 
     static SliderComponent CreateSlider(VolumeConfig config) {
@@ -83,8 +99,8 @@ internal static class UI {
     
     static void OnSearchValueChanged(InputComponent instance, string value) {
         var search = value.ToLower();
-        foreach (var (key, slider) in _sliders) {
-            slider.Enabled = string.IsNullOrEmpty(search) || key.ToLower().Contains(search);
+        foreach (var (key, gameObject) in _sliderGameObjects) {
+            gameObject.SetActive(string.IsNullOrEmpty(search) || key.ToLower().Contains(search));
         }
     }
 

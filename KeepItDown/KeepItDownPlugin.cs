@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
+using System.Collections;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using LethalSettings.UI;
-using LethalSettings.UI.Components;
 using UnityEngine;
 
 namespace KeepItDown; 
@@ -37,6 +34,11 @@ public class KeepItDownPlugin : BaseUnityPlugin {
         Harmony.CreateAndPatchAll(typeof(Patches));
         
         Logger.LogInfo($"{PluginInfo.PLUGIN_GUID} is loaded!");
+    }
+
+    IEnumerator Start() {
+        yield return null;
+        UI.FindSliders();
     }
 
     /// <inheritdoc cref="KeepItDownConfig.AddVolumeConfig"/>
