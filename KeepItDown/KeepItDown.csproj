@@ -25,13 +25,21 @@
 
     <ItemGroup>
         <Reference Include="Assembly-CSharp">
-            <HintPath>References/Assembly-CSharp.dll</HintPath>
+            <HintPath>lib/Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="Unity.Netcode.Runtime">
-            <HintPath>References/Unity.Netcode.Runtime.dll</HintPath>
+            <HintPath>lib/Unity.Netcode.Runtime.dll</HintPath>
         </Reference>
         <Reference Include="LethalSettings">
-            <HintPath>References/LethalSettings.dll</HintPath>
+            <HintPath>lib/LethalSettings.dll</HintPath>
         </Reference>
     </ItemGroup>
+    
+    <PropertyGroup>
+        <GameDir>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company</GameDir>
+    </PropertyGroup>
+
+    <Target Name="CopyDLL" AfterTargets="Build">
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\BepInEx\plugins" />
+    </Target>
 </Project>
