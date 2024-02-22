@@ -63,13 +63,6 @@ public static class ComponentBundling {
 
         var gameObjectType = unityAssembly.MainModule.GetType("UnityEngine.GameObject")!;
         
-        /*
-         *  var bundle = ComponentBundling._bundledComponents[<targetComponentFullName>];
-         *  for (var i = 0; i < bundle.Count; i++) {
-         *      gameObject.AddComponent(Type.GetType(bundle[i]));
-         *  }
-        */
-        
         var il = methodDefinition.Body.GetILProcessor();
         
         var stringListReference = targetAssembly.MainModule.ImportReference(typeof(List<string>));
@@ -107,7 +100,7 @@ public static class ComponentBundling {
             typeof(List<string>).GetMethod("get_Item")
         )); // bundle[i]
         il.Emit(OpCodes.Call, targetAssembly.MainModule.ImportReference(
-            typeof(Type).GetMethod("GetType", new[] { typeof(string) })
+            typeof(Type).GetMethod(nameof(Type.GetType), new[] { typeof(string) })
         )); // Type.GetType
         il.Emit(OpCodes.Callvirt, targetAssembly.MainModule.ImportReference(
             gameObjectType.Methods.First(m => m.Name == "AddComponent" && !m.HasGenericParameters)
@@ -124,7 +117,7 @@ public static class ComponentBundling {
         il.Emit(OpCodes.Ldloc_1); // i
         il.Emit(OpCodes.Ldloc_0); // bundle
         il.Emit(OpCodes.Callvirt, targetAssembly.MainModule.ImportReference(
-            typeof(List<string>).GetMethod("get_Count") 
+            typeof(List<string>).GetProperty(nameof(List<string>.Count))!.GetMethod
         )); // bundle.Count
         il.Emit(OpCodes.Blt, loopStart); // i < bundle.Count
         
