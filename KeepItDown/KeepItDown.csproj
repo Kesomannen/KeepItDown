@@ -34,9 +34,13 @@
             <HintPath>lib/LethalSettings.dll</HintPath>
         </Reference>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\KeepItDown.Preloader\KeepItDown.Preloader.csproj" />
+    </ItemGroup>
     
     <PropertyGroup>
-        <GameDir>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company</GameDir>
+        <GameDir>D:\Program\Steam\steamapps\common\Lethal Company</GameDir>
     </PropertyGroup>
 
     <Target Name="CopyDLL" AfterTargets="Build">

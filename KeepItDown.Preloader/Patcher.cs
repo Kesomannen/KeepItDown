@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using KeepItDown;
 using Mono.Cecil;
 
 namespace ComponentBundler;
@@ -7,11 +6,24 @@ namespace ComponentBundler;
 public static class Patcher {
     public static IEnumerable<string> TargetDLLs {
         get {
+            yield return "UnityEngine.CoreModule.dll";
             yield return "Assembly-CSharp.dll";
         }
     }
     
+    static AssemblyDefinition _unityAssembly;
+    
     public static void Patch(AssemblyDefinition assembly) {
-        ComponentBundling.Bundle<MyBehaviour>(assembly,"GrabbableObject");
+        if (assembly.Name.Name == "UnityEngine.CoreModule") {
+            _unityAssembly = assembly;
+            return;
+        }
+
+        ComponentBundling.Bundle(
+            assembly, 
+            _unityAssembly,
+            "GrabbableObject",
+            "KeepItDown.MyBehaviour, KeepItDown"
+        );
     }
 }

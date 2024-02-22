@@ -34,6 +34,8 @@ public class KeepItDownPlugin : BaseUnityPlugin {
         UI.Initialize(Config);
         Harmony.CreateAndPatchAll(typeof(Patches));
         
+        Log.LogInfo($"Type of MyBehaviour: {typeof(MyBehaviour).AssemblyQualifiedName}");
+        
         Log.LogInfo($"{PluginInfo.PLUGIN_GUID} is loaded!");
     }
 
