@@ -4,6 +4,7 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using LethalSettings.UI;
 using UnityEngine;
 
 namespace KeepItDown; 
@@ -13,7 +14,7 @@ namespace KeepItDown;
 public class KeepItDownPlugin : BaseUnityPlugin {
     public static KeepItDownPlugin Instance { get; private set; }
     
-    internal new ManualLogSource Logger => base.Logger;
+    internal ManualLogSource Log => Logger;
     public new KeepItDownConfig Config { get; private set; }
     
     void Awake() {
@@ -33,12 +34,7 @@ public class KeepItDownPlugin : BaseUnityPlugin {
         UI.Initialize(Config);
         Harmony.CreateAndPatchAll(typeof(Patches));
         
-        Logger.LogInfo($"{PluginInfo.PLUGIN_GUID} is loaded!");
-    }
-
-    IEnumerator Start() {
-        yield return null;
-        UI.FindSliderGameObjects();
+        Log.LogInfo($"{PluginInfo.PLUGIN_GUID} is loaded!");
     }
 
     /// <inheritdoc cref="KeepItDownConfig.AddVolumeConfig"/>
@@ -64,7 +60,7 @@ public class KeepItDownPlugin : BaseUnityPlugin {
     /// <returns>Whether or not the binding was successfully created.</returns>
     public static bool Bind(string key, GameObject gameObject, float baseVolume, Action<float> volumeSetter) {
         if (!TryGetConfig(key, out var volumeConfig)) {
-            Instance.Logger.LogWarning($"Trying to bind volume config for {key}, but it doesn't exist");
+            Instance.Log.LogWarning($"Trying to bind volume config for {key}, but it doesn't exist");
             return false;
         }
         
@@ -90,7 +86,7 @@ public class KeepItDownPlugin : BaseUnityPlugin {
     /// <returns>Whether or not the bindings were successfully removed.</returns>
     public static bool RemoveBindings(string key, GameObject gameObject) {
         if (!TryGetConfig(key, out var volumeConfig)) {
-            Instance.Logger.LogWarning($"Trying to remove volume config bindings for {key}, but it doesn't exist");
+            Instance.Log.LogWarning($"Trying to remove volume config bindings for {key}, but it doesn't exist");
             return false;
         }
         

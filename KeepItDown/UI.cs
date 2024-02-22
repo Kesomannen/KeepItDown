@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using DunGen;
 using LethalSettings.UI;
 using LethalSettings.UI.Components;
 using UnityEngine;
@@ -48,15 +49,23 @@ internal static class UI {
     }
 
     public static void FindSliderGameObjects() {
+        KeepItDownPlugin.Instance.Log.LogInfo($"bla bla");
         var sliderComponentObjectType = Type.GetType("LethalSettings.UI.Components.SliderComponentObject, LethalSettings");
+        KeepItDownPlugin.Instance.Log.LogInfo($"Slider component object type: {sliderComponentObjectType}");
         var viewport = _modMenuConfig.GetPropertyValue<GameObject>("Viewport");
+        KeepItDownPlugin.Instance.Log.LogInfo($"Viewport: {viewport}");
 
         var slierComponentObjects = viewport.GetComponentsInChildren(sliderComponentObjectType);
+        KeepItDownPlugin.Instance.Log.LogInfo($"Slider component objects: {slierComponentObjects.Length}");
         foreach (var sliderObject in slierComponentObjects) {
             var sliderComponent = sliderObject.GetFieldValue<SliderComponent>("component");
+            KeepItDownPlugin.Instance.Log.LogInfo($"Slider component: {sliderComponent}");
             var key = _sliders.First(kvp => kvp.Value == sliderComponent).Key;
+            KeepItDownPlugin.Instance.Log.LogInfo($"Key: {key}");
             _sliderGameObjects[key] = sliderObject.gameObject;
         }
+        
+        KeepItDownPlugin.Instance.Log.LogInfo($"Found {_sliderGameObjects.Count} slider game objects.");
     }
 
     static SliderComponent CreateSlider(VolumeConfig config) {

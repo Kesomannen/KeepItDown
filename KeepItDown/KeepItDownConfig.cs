@@ -34,7 +34,7 @@ public class KeepItDownConfig {
     /// <returns>Whether or not the config was successfully added.</returns>
     public bool AddVolumeConfig(string key, string section, ConfigFile cfg = null) {
         if (_volumes.ContainsKey(key)) {
-            KeepItDownPlugin.Instance.Logger.LogWarning($"Volume config for {key} already exists!");
+            KeepItDownPlugin.Instance.Log.LogWarning($"Volume config for {key} already exists!");
             return false;
         }
         
