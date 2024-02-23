@@ -30,9 +30,11 @@ public class KeepItDownPlugin : BaseUnityPlugin {
             "Walkie-talkie",
             "Scan"
         }, "Vanilla");
-        
-        UI.Initialize(Config);
-        Harmony.CreateAndPatchAll(typeof(Patches));
+
+        Harmony.CreateAndPatchAll(typeof(Patches), PluginInfo.PLUGIN_GUID);
+
+        var ui = new GameObject("KeepItDownUI").AddComponent<UI>();
+        DontDestroyOnLoad(ui.gameObject);
         
         Log.LogInfo($"{PluginInfo.PLUGIN_GUID} is loaded!");
     }
