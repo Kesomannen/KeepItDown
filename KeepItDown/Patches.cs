@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using HarmonyLib;
-using LethalSettings.UI;
-using Object = UnityEngine.Object;
+﻿using HarmonyLib;
 
 namespace KeepItDown; 
 
