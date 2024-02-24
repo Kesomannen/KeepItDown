@@ -34,12 +34,4 @@
             <HintPath>lib/LethalSettings.dll</HintPath>
         </Reference>
     </ItemGroup>
-
-    <PropertyGroup>
-        <LETHAL_COMPANY_PATH>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company</LETHAL_COMPANY_PATH>
-    </PropertyGroup>
-
-    <Target Name="CopyDLL" AfterTargets="Build">
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(LETHAL_COMPANY_PATH)\BepInEx\plugins" />
-    </Target>
 </Project>
