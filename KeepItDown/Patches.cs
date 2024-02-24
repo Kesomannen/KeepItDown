@@ -1,15 +1,42 @@
 ﻿using HarmonyLib;
+using Unity.Netcode;
+using UnityEngine;
 
 namespace KeepItDown; 
 
 internal static class Patches {
+    static string GetFormattedName(Object gameObject) {
+        return gameObject.name.Replace("(Clone)", "").Replace("Item", "");
+    }
+    
     [HarmonyPostfix]
     [HarmonyPatch(typeof(NoisemakerProp), nameof(NoisemakerProp.Start))]
     static void NoiseMakerProp_Start_Postfix(NoisemakerProp __instance) {
         var gameObject = __instance.gameObject;
-        var name = gameObject.name.Replace("(Clone)", "").Replace("Item", "");
+        var name = GetFormattedName(gameObject);
         KeepItDownPlugin.Bind(name, gameObject, __instance.maxLoudness, v => __instance.maxLoudness = v);
         KeepItDownPlugin.Bind(name, gameObject, __instance.minLoudness, v => __instance.minLoudness = v);
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(AnimatedItem), nameof(AnimatedItem.Start))]
+    static void AnimatedItem_Start_Postfix(AnimatedItem __instance) {
+        var name = GetFormattedName(__instance.gameObject);
+        KeepItDownPlugin.BindAudioSource(name, __instance.itemAudio);
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(RadarBoosterItem), nameof(RadarBoosterItem.Start))]
+    static void RadarBoosterItem_Start_Postfix(RadarBoosterItem __instance) {
+        KeepItDownPlugin.BindAudioSource("RadarBoosterPing", __instance.pingAudio);
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(ShipAlarmCord), "Start")]
+    static void ShipAlarmCord_Start_Postfix(ShipAlarmCord __instance) {
+        KeepItDownPlugin.BindAudioSource("ShipAlarm", __instance.hornClose);
+        KeepItDownPlugin.BindAudioSource("ShipAlarm", __instance.hornFar);
+        KeepItDownPlugin.BindAudioSource("ShipAlarmCord", __instance.cordAudio);
     }
     
     [HarmonyPostfix]
@@ -31,10 +58,40 @@ internal static class Patches {
     }
     
     [HarmonyPostfix]
+    [HarmonyPatch(typeof(SprayPaintItem), nameof(SprayPaintItem.Start))]
+    static void SprayPaintItem_Start_Postfix(SprayPaintItem __instance) {
+        KeepItDownPlugin.BindAudioSource("Spraycan", __instance.sprayAudio);
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(Landmine), "Start")]
+    static void Landmine_Start_Postfix(Landmine __instance) {
+        KeepItDownPlugin.BindAudioSource("Landmine", __instance.mineAudio);
+    }
+    
+    [HarmonyPostfix]
     [HarmonyPatch(typeof(GrabbableObject), nameof(GrabbableObject.Start))]
     static void GrabbableObject_Start_Postfix(GrabbableObject __instance) {
-        if (__instance is RemoteProp remoteProp) {
-            KeepItDownPlugin.BindAudioSource("Remote", remoteProp.remoteAudio);
+        switch (__instance) {
+            case RemoteProp remoteProp:
+                KeepItDownPlugin.BindAudioSource("Remote", remoteProp.remoteAudio);
+                break;
+            case JetpackItem jetpackItem:
+                KeepItDownPlugin.BindAudioSource("Jetpack", jetpackItem.jetpackAudio);
+                break;
+            case Shovel shovel:
+                KeepItDownPlugin.BindAudioSource("Shovel", shovel.shovelAudio);
+                break;
+        }
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(NetworkBehaviour), nameof(NetworkBehaviour.OnNetworkSpawn))]
+    static void NetworkBehaviour_OnNetworkSpawn_Postfix(NetworkBehaviour __instance) {
+        switch (__instance) {
+            case ItemCharger itemCharger:
+                KeepItDownPlugin.BindAudioSource("ItemCharger", itemCharger.zapAudio);
+                break;
         }
     }
 

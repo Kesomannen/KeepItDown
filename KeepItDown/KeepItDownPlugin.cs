@@ -28,7 +28,19 @@ public class KeepItDownPlugin : BaseUnityPlugin {
             "Remote",
             "Flashlight",
             "Walkie-talkie",
-            "Scan"
+            "Scan",
+            "Spraycan",
+            "Dentures",
+            "RobotToy",
+            "Hairdryer",
+            "Jetpack",
+            "RadarBoosterPing",
+            "ShipAlarm",
+            "ShipAlarmCord",
+            "ItemCharger",
+            "Shovel",
+            "RubberDucky",
+            "Landmine"
         }, "Vanilla");
 
         Harmony.CreateAndPatchAll(typeof(Patches), PluginInfo.PLUGIN_GUID);
