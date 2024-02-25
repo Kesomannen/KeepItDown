@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using LethalSettings.UI;
 using LethalSettings.UI.Components;
 using UnityEngine;

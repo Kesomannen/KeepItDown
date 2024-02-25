@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
@@ -40,7 +41,12 @@ public class KeepItDownPlugin : BaseUnityPlugin {
             "ItemCharger",
             "Shovel",
             "RubberDucky",
-            "Landmine"
+            "Landmine",
+            "Jester",
+            "Thunder",
+            "WhoopieCushion",
+            "ExtensionLadder",
+            "Turret"
         }, "Vanilla");
 
         Harmony.CreateAndPatchAll(typeof(Patches), PluginInfo.PLUGIN_GUID);
@@ -62,7 +68,7 @@ public class KeepItDownPlugin : BaseUnityPlugin {
     
     /// <summary>
     /// Binds to a volume config. Use this when you want to sync a property
-    /// to a volume config. If you want to bind an AudioSource's volume,
+    /// with a volume config. If you want to bind an AudioSource's volume,
     /// use <see cref="BindAudioSource"/> instead.
     /// </summary>
     /// <param name="key">The key of the config.</param>
@@ -70,7 +76,7 @@ public class KeepItDownPlugin : BaseUnityPlugin {
     /// The "owner" GameObject. When this is destroyed, the binding is removed.
     /// </param>
     /// <param name="baseVolume">The default volume, will be scaled by the config value.</param>
-    /// <param name="volumeSetter">An action to set the volume property (not normalized).</param>
+    /// <param name="volumeSetter">An action to set the raw volume.</param>
     /// <returns>Whether or not the binding was successfully created.</returns>
     public static bool Bind(string key, GameObject gameObject, float baseVolume, Action<float> volumeSetter) {
         if (!TryGetConfig(key, out var volumeConfig)) {
@@ -90,6 +96,16 @@ public class KeepItDownPlugin : BaseUnityPlugin {
     /// <returns>Whether or not the binding was successfully created.</returns>
     public static bool BindAudioSource(string key, AudioSource audioSource) {
         return Bind(key, audioSource.gameObject, audioSource.volume, v => audioSource.volume = v);
+    }
+    
+    /// <summary>
+    /// Binds the volume of one or more AudioSources to a volume config.
+    /// </summary>
+    /// <param name="key">The key of the config.</param>
+    /// <param name="audioSources">The AudioSources to bind to.</param>
+    /// <returns>Whether or not the binding was successfully created.</returns>
+    public static bool BindAudioSources(string key, params AudioSource[] audioSources) {
+        return audioSources.All(audioSource => BindAudioSource(key, audioSource));
     }
     
     /// <summary>

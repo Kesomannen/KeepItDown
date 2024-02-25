@@ -34,8 +34,7 @@ internal static class Patches {
     [HarmonyPostfix]
     [HarmonyPatch(typeof(ShipAlarmCord), "Start")]
     static void ShipAlarmCord_Start_Postfix(ShipAlarmCord __instance) {
-        KeepItDownPlugin.BindAudioSource("ShipAlarm", __instance.hornClose);
-        KeepItDownPlugin.BindAudioSource("ShipAlarm", __instance.hornFar);
+        KeepItDownPlugin.BindAudioSources("ShipAlarm", __instance.hornClose, __instance.hornFar);
         KeepItDownPlugin.BindAudioSource("ShipAlarmCord", __instance.cordAudio);
     }
     
@@ -70,6 +69,35 @@ internal static class Patches {
     }
     
     [HarmonyPostfix]
+    [HarmonyPatch(typeof(Turret), "Start")]
+    static void Turret_Start_Postfix(Turret __instance) {
+        KeepItDownPlugin.BindAudioSources("Turret", __instance.mainAudio, __instance.berserkAudio, __instance.farAudio);
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(JesterAI), nameof(JesterAI.Start))]
+    static void JesterAI_Start_Postfix(JesterAI __instance) {
+        KeepItDownPlugin.BindAudioSource("Jester", __instance.farAudio);
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(StormyWeather), "OnEnable")]
+    static void StormyWeather_OnEnable_Postfix(StormyWeather __instance) {
+        KeepItDownPlugin.BindAudioSources(
+            "Thunder",
+            __instance.randomStrikeAudio,
+            __instance.randomStrikeAudioB,
+            __instance.targetedStrikeAudio
+        );  
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(StormyWeather), "OnDisable")]
+    static void StormyWeather_OnDisable_Postfix(StormyWeather __instance) {
+        KeepItDownPlugin.RemoveBindings("Thunder", __instance.gameObject);
+    }
+    
+    [HarmonyPostfix]
     [HarmonyPatch(typeof(GrabbableObject), nameof(GrabbableObject.Start))]
     static void GrabbableObject_Start_Postfix(GrabbableObject __instance) {
         switch (__instance) {
@@ -81,6 +109,12 @@ internal static class Patches {
                 break;
             case Shovel shovel:
                 KeepItDownPlugin.BindAudioSource("Shovel", shovel.shovelAudio);
+                break;
+            case WhoopieCushionItem whoopieCushionItem:
+                KeepItDownPlugin.BindAudioSource("WhoopieCushion", whoopieCushionItem.whoopieCushionAudio);
+                break;
+            case ExtensionLadderItem extensionLadderItem:
+                KeepItDownPlugin.BindAudioSource("ExtensionLadder", extensionLadderItem.ladderAudio);
                 break;
         }
     }

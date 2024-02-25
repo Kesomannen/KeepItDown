@@ -21,7 +21,7 @@ public class KeepItDownConfig {
             section,
             $"{key}Volume",
             50f,
-            $"Volume of the {key.ToLower()} sound (0-100). Defaults to 50."
+            $"Volume of {key}"
         ));
     }
     
@@ -152,9 +152,25 @@ public class VolumeConfig : IDisposable {
         binding.Setter(NormalizedValue * binding.BaseVolume);
     }
 
+    /// <summary>
+    /// Represents a binding between a GameObject and a volume config.
+    /// You can create bindings with <see cref="VolumeConfig.AddBinding"/> or
+    /// <see cref="KeepItDownPlugin.Bind"/>.
+    /// </summary>
     public struct Binding {
+        /// <summary>
+        /// The "owner" GameObject. When this is destroyed, the binding is removed.
+        /// </summary>
         public GameObject GameObject { get; }
+        
+        /// <summary>
+        /// The default volume, will be scaled by the config value.
+        /// </summary>
         public float BaseVolume { get; }
+        
+        /// <summary>
+        /// An action to set the raw volume.
+        /// </summary>
         public Action<float> Setter { get; }
 
         public Binding(GameObject gameObject, float baseVolume, Action<float> setter) {
