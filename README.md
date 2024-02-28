@@ -20,31 +20,31 @@ using KeepItDown;
 
 [BepInDependency(KeepItDownInfo.Guid)]
 public class MyPlugin : BaseUnityPlugin {
-  ...
+    ...
 }
 ```
 2. Call `KeepItDownPlugin.AddVolumeConfigs` with unique keys for your volume configs, as well as your mod name.
 ```cs
 public class MyPlugin : BaseUnityPlugin {
-  void Awake() {
-    KeepItDownPlugin.Instance.AddVolumeConfigs(
-      new [] {
-        "CowMoo",
-        "SheepBaa"
-      },
-      "MyPlugin"
-    );
-  }
+    void Awake() {
+        KeepItDownPlugin.Instance.AddVolumeConfigs(
+            new [] {
+                "CowMoo",
+                "SheepBaa"
+            },
+            "MyPlugin"
+        );
+    }
 }
 ```
 3. Finally, bind AudioSources with `KeepItDownPlugin.BindAudioSource`, to have their volumes synced with the config. Config values are relative and applied on top of the AudioSource's original volume, so you can tune the `volume` property however you like.
 ```cs
 public class CowEnemy : EnemyAI {
-  [SerializeField] AudioSource _mooAudioSource;
+    [SerializeField] AudioSource _mooAudioSource;
 
-  void Awake() {
-    KeepItDownPlugin.BindAudioSource("CowMoo", _mooAudioSource);
-  }
+    void Awake() {
+        KeepItDownPlugin.BindAudioSource("CowMoo", _mooAudioSource);
+    }
 }
 ```
 
