@@ -6,12 +6,7 @@ using UnityEngine;
 
 namespace KeepItDown; 
 
-public static class UI {
-    const string Name = "Keep It Down!";
-    const string Guid = PluginInfo.PLUGIN_GUID;
-    const string Version = PluginInfo.PLUGIN_VERSION;
-    const string Description = "Volume control for various sounds in the game.";
-    
+public static class LethalSettingsUI {
     static SliderComponent[] _sliders;
     static bool _isInitialized;
     
@@ -35,7 +30,7 @@ public static class UI {
 
         var resetButton = new ButtonComponent {
             Text = "Reset",
-            OnClick = ResetSliders
+            OnClick = OnResetClicked
         };
 
         var searchBar = new InputComponent {
@@ -50,10 +45,10 @@ public static class UI {
         components.AddRange(_sliders);
 
         var settings = new ModMenu.ModSettingsConfig {
-            Name = Name,
-            Id = Guid,
-            Version = Version,
-            Description = Description,
+            Name = SharedUI.Name,
+            Id = SharedUI.Guid,
+            Version = SharedUI.Version,
+            Description = SharedUI.Description,
             MenuComponents = components.ToArray()
         };
         
@@ -78,12 +73,7 @@ public static class UI {
             var slider = _sliders[i++];
             var volumeConfig = config.Volumes[key];
             
-            var text = $"{key} Volume";
-            if (volumeConfig.Section != "Vanilla") {
-                text += $" ({volumeConfig.Section})";
-            }
-            
-            slider.Text = text;
+            slider.Text = SharedUI.GetDisplayName(volumeConfig);
             slider.Value = volumeConfig.RawValue;
             
             _sliderToConfigKey[slider] = key;
@@ -104,9 +94,7 @@ public static class UI {
         slider.Value = rawValue;
     }
     
-    static void ResetSliders(ButtonComponent instance) {
-        foreach (var volumeConfig in KeepItDownPlugin.Instance.Config.Volumes.Values) {
-            volumeConfig.NormalizedValue = 1f;
-        }
+    static void OnResetClicked(ButtonComponent instance) {
+        SharedUI.ResetAllVolumes();
     }
 }

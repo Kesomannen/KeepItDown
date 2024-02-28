@@ -33,5 +33,8 @@
         <Reference Include="LethalSettings">
             <HintPath>lib/LethalSettings.dll</HintPath>
         </Reference>
+        <Reference Include="LethalConfig">
+            <HintPath>lib/LethalConfig.dll</HintPath>
+        </Reference>
     </ItemGroup>
 </Project>

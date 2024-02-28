@@ -59,7 +59,8 @@ public class KeepItDownConfig {
 /// <see cref="ConfigEntry{T}"/> with some extra functionality.
 /// </summary>
 public class VolumeConfig : IDisposable {
-    readonly ConfigEntry<float> _configEntry;
+    public ConfigEntry<float> ConfigEntry { get; }
+    
     readonly List<Binding> _bindings = new();
 
     bool _isDisposed;
@@ -77,12 +78,12 @@ public class VolumeConfig : IDisposable {
     /// between 0 and 100, where 50 is normal volume.
     /// </summary>
     public float RawValue {
-        get => _configEntry.Value;
-        set => _configEntry.Value = value;
+        get => ConfigEntry.Value;
+        set => ConfigEntry.Value = value;
     }
     
     public string Key { get; }
-    public string Section => _configEntry.Definition.Section;
+    public string Section => ConfigEntry.Definition.Section;
 
     /// <summary>
     /// Invoked when the volume value changes.
@@ -96,9 +97,9 @@ public class VolumeConfig : IDisposable {
     
     internal VolumeConfig(string key, ConfigEntry<float> configEntry) {
         Key = key;
-        _configEntry = configEntry;
+        ConfigEntry = configEntry;
 
-        _configEntry.SettingChanged += SettingChangedEventHandler;
+        ConfigEntry.SettingChanged += SettingChangedEventHandler;
     }
 
     ~VolumeConfig() {
@@ -109,7 +110,7 @@ public class VolumeConfig : IDisposable {
         if (_isDisposed) return;
         _isDisposed = true;
         
-        _configEntry.SettingChanged -= SettingChangedEventHandler;
+        ConfigEntry.SettingChanged -= SettingChangedEventHandler;
     }
     
     void SettingChangedEventHandler(object sender, EventArgs e) {

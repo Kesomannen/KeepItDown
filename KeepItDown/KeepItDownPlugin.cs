@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
 using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
-using LethalSettings.UI;
 using UnityEngine;
 
 namespace KeepItDown; 
@@ -13,14 +12,16 @@ namespace KeepItDown;
 // ReSharper disable Unity.NoNullPropagation
 
 [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-[BepInDependency(LethalSettingsGuid)]
+[BepInDependency(LethalSettingsGuid, BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency(LethalConfigGuid, BepInDependency.DependencyFlags.SoftDependency)]
 public class KeepItDownPlugin : BaseUnityPlugin {
     public static KeepItDownPlugin Instance { get; private set; }
     
     internal ManualLogSource Log => Logger;
     public new KeepItDownConfig Config { get; private set; }
     
-    internal const string LethalSettingsGuid = "com.willis.lc.lethalsettings";
+    const string LethalSettingsGuid = "com.willis.lc.lethalsettings";
+    const string LethalConfigGuid = "ainavt.lc.lethalconfig";
     
     void Awake() {
         Instance = this;
@@ -56,14 +57,24 @@ public class KeepItDownPlugin : BaseUnityPlugin {
 
         var harmony = new Harmony(PluginInfo.PLUGIN_GUID);
         harmony.PatchAll(typeof(AudioPatches));
-        harmony.PatchAll(typeof(MenuPatches));
+        
+        var lethalSettingsInstalled = Chainloader.PluginInfos.ContainsKey(LethalSettingsGuid);
+        if (lethalSettingsInstalled) {
+            Log.LogInfo("LethalSettings found, initializing UI...");
+            LethalSettingsUI.Init();
+        }
+        
+        var lethalConfigInstalled = Chainloader.PluginInfos.ContainsKey(LethalConfigGuid);
+        if (lethalConfigInstalled) {
+            Log.LogInfo("LethalConfig found, initializing UI...");
+            LethalConfigUI.Init();
+        }
+        
+        if (!lethalSettingsInstalled && !lethalConfigInstalled) {
+            Log.LogWarning("Neither LethalSettings nor LethalConfig found, no UI will be available");
+        }
         
         Log.LogInfo($"{PluginInfo.PLUGIN_GUID} is loaded!");
-    }
-
-    void Start() {
-        Log.LogInfo("Initializing UI");
-        UI.Init();
     }
 
     /// <inheritdoc cref="KeepItDownConfig.AddVolumeConfig"/>
