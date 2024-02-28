@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace KeepItDown; 
 
-internal static class Patches {
+internal static class AudioPatches {
     static string GetFormattedName(Object gameObject) {
         return gameObject.name.Replace("(Clone)", "").Replace("Item", "");
     }

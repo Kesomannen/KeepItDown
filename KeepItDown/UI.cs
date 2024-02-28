@@ -6,18 +6,21 @@ using UnityEngine;
 
 namespace KeepItDown; 
 
-[DefaultExecutionOrder(-1)]
-public class UI : MonoBehaviour {
+public static class UI {
     const string Name = "Keep It Down!";
     const string Guid = PluginInfo.PLUGIN_GUID;
     const string Version = PluginInfo.PLUGIN_VERSION;
     const string Description = "Volume control for various sounds in the game.";
     
-    SliderComponent[] _sliders;
+    static SliderComponent[] _sliders;
+    static bool _isInitialized;
     
-    readonly Dictionary<SliderComponent, string> _sliderToConfigKey = new();
-    
-    public void Start() {
+    static readonly Dictionary<SliderComponent, string> _sliderToConfigKey = new();
+
+    internal static void Init() {
+        if (_isInitialized) return;
+        _isInitialized = true;
+        
         var config = KeepItDownPlugin.Instance.Config;
         _sliders = config.Volumes.Select(kvp => {
             kvp.Value.OnChanged += OnConfigChangedHandler;
@@ -45,17 +48,19 @@ public class UI : MonoBehaviour {
             searchBar
         };
         components.AddRange(_sliders);
-        
-        ModMenu.RegisterMod(new ModMenu.ModSettingsConfig {
+
+        var settings = new ModMenu.ModSettingsConfig {
             Name = Name,
             Id = Guid,
             Version = Version,
             Description = Description,
             MenuComponents = components.ToArray()
-        }, true, true);
+        };
+        
+        ModMenu.RegisterMod(settings, true, true);
     }
     
-    void RefreshOrder(string searchTerm = null) {
+    static void RefreshOrder(string searchTerm = null) {
         var config = KeepItDownPlugin.Instance.Config;
         
         IEnumerable<string> orderedKeys;
@@ -85,21 +90,21 @@ public class UI : MonoBehaviour {
         }
     }
     
-    void OnSliderValueChanged(SliderComponent slider, float value) {
+    static void OnSliderValueChanged(SliderComponent slider, float value) {
         if (!_sliderToConfigKey.TryGetValue(slider, out var key)) return;
         if (!KeepItDownPlugin.TryGetConfig(key, out var config)) return;
         
         config.RawValue = value;
     }
 
-    void OnConfigChangedHandler(VolumeConfig config, float rawValue, float normalizedValue) {
+    static void OnConfigChangedHandler(VolumeConfig config, float rawValue, float normalizedValue) {
         var slider = _sliders.FirstOrDefault(s => _sliderToConfigKey[s] == config.Key);
         if (slider == null) return;
         if (Mathf.Approximately(slider.Value, rawValue)) return;
         slider.Value = rawValue;
     }
     
-    void ResetSliders(ButtonComponent instance) {
+    static void ResetSliders(ButtonComponent instance) {
         foreach (var volumeConfig in KeepItDownPlugin.Instance.Config.Volumes.Values) {
             volumeConfig.NormalizedValue = 1f;
         }

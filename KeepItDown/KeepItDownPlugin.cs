@@ -13,12 +13,14 @@ namespace KeepItDown;
 // ReSharper disable Unity.NoNullPropagation
 
 [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
-[BepInDependency("com.willis.lc.lethalsettings")]
+[BepInDependency(LethalSettingsGuid)]
 public class KeepItDownPlugin : BaseUnityPlugin {
     public static KeepItDownPlugin Instance { get; private set; }
     
     internal ManualLogSource Log => Logger;
     public new KeepItDownConfig Config { get; private set; }
+    
+    internal const string LethalSettingsGuid = "com.willis.lc.lethalsettings";
     
     void Awake() {
         Instance = this;
@@ -52,12 +54,16 @@ public class KeepItDownPlugin : BaseUnityPlugin {
             "TV"
         }, "Vanilla");
 
-        Harmony.CreateAndPatchAll(typeof(Patches), PluginInfo.PLUGIN_GUID);
-
-        var ui = new GameObject("KeepItDownUI").AddComponent<UI>();
-        DontDestroyOnLoad(ui.gameObject);
+        var harmony = new Harmony(PluginInfo.PLUGIN_GUID);
+        harmony.PatchAll(typeof(AudioPatches));
+        harmony.PatchAll(typeof(MenuPatches));
         
         Log.LogInfo($"{PluginInfo.PLUGIN_GUID} is loaded!");
+    }
+
+    void Start() {
+        Log.LogInfo("Initializing UI");
+        UI.Init();
     }
 
     /// <inheritdoc cref="KeepItDownConfig.AddVolumeConfig"/>
