@@ -12,14 +12,14 @@ Go to [the thunderstore page](https://thunderstore.io/c/lethal-company/p/Kesoman
 
 You can add your own configs for custom mods extremely easily.
 
-1. Reference the `KeepItDown` assembly and add the plugin as a dependency.
+1. Reference the `KeepItDown` assembly and add the plugin as a soft dependency.
 ```cs
-[BepInDependency(KeepItDown.PluginInfo.PLUGIN_GUID)]
+[BepInDependency(KeepItDown.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
 public class MyPlugin : BaseUnityPlugin {
   ...
 }
 ```
-3. For each config, call `KeepItDownPlugin.AddConfig` with a unique key.
+3. For each config, call `KeepItDownPlugin.AddConfig` with a unique key. If KeepItDown is not installed, this will quietly fail.
 ```cs
 public class MyPlugin : BaseUnityPlugin {
   void Awake() {
@@ -28,6 +28,7 @@ public class MyPlugin : BaseUnityPlugin {
 }
 ```
 4. Finally, bind AudioSources with `KeepItDownPlugin.BindAudioSource`, to have their volumes synced with the config. Config values are relative (from 0-200% of the base volume), so you can tweak the AudioSource's volume freely.
+   As with `AddConfig`, this will be dropped quietly if KeepItDown is not present.
 ```cs
 public class CowEnemy : EnemyAI {
   [SerializeField] AudioSource _mooAudioSource;
