@@ -82,7 +82,7 @@ public static class LethalSettingsUI {
     
     static void OnSliderValueChanged(SliderComponent slider, float value) {
         if (!_sliderToConfigKey.TryGetValue(slider, out var key)) return;
-        if (!KeepItDownPlugin.TryGetConfig(key, out var config)) return;
+        if (!KeepItDownPlugin.Instance.TryGetConfig(key, out var config)) return;
         
         config.RawValue = value;
     }
