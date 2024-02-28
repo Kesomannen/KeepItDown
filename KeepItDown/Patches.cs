@@ -79,6 +79,18 @@ internal static class Patches {
     static void JesterAI_Start_Postfix(JesterAI __instance) {
         KeepItDownPlugin.BindAudioSource("Jester", __instance.farAudio);
     }
+        
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(TVScript), "OnEnable")]
+    static void TVScript_OnEnable_Postfix(TVScript __instance) {
+        KeepItDownPlugin.BindAudioSource("TV", __instance.tvSFX);
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(TVScript), "OnDisable")]
+    static void TVScript_OnDisable_Postfix(TVScript __instance) {
+        KeepItDownPlugin.RemoveBindings("TV", __instance.tvSFX.gameObject);
+    }
     
     [HarmonyPostfix]
     [HarmonyPatch(typeof(StormyWeather), "OnEnable")]

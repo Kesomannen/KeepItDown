@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace KeepItDown; 
 
+[DefaultExecutionOrder(-1)]
 public class UI : MonoBehaviour {
     const string Name = "Keep It Down!";
     const string Guid = PluginInfo.PLUGIN_GUID;
@@ -15,8 +16,8 @@ public class UI : MonoBehaviour {
     SliderComponent[] _sliders;
     
     readonly Dictionary<SliderComponent, string> _sliderToConfigKey = new();
-
-    public void Awake() {
+    
+    public void Start() {
         var config = KeepItDownPlugin.Instance.Config;
         _sliders = config.Volumes.Select(kvp => {
             kvp.Value.OnChanged += OnConfigChangedHandler;

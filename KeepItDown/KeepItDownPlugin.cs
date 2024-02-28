@@ -10,6 +10,8 @@ using UnityEngine;
 
 namespace KeepItDown; 
 
+// ReSharper disable Unity.NoNullPropagation
+
 [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
 [BepInDependency("com.willis.lc.lethalsettings")]
 public class KeepItDownPlugin : BaseUnityPlugin {
@@ -46,7 +48,8 @@ public class KeepItDownPlugin : BaseUnityPlugin {
             "Thunder",
             "WhoopieCushion",
             "ExtensionLadder",
-            "Turret"
+            "Turret",
+            "TV"
         }, "Vanilla");
 
         Harmony.CreateAndPatchAll(typeof(Patches), PluginInfo.PLUGIN_GUID);
@@ -59,11 +62,14 @@ public class KeepItDownPlugin : BaseUnityPlugin {
 
     /// <inheritdoc cref="KeepItDownConfig.AddVolumeConfig"/>
     public static bool AddConfig(string key, string section, ConfigFile cfg = null) {
-        return Instance.Config.AddVolumeConfig(key, section, cfg);
+        return Instance?.Config.AddVolumeConfig(key, section, cfg) ?? false;
     }
     
     public static bool TryGetConfig(string key, out VolumeConfig config) {
-        return Instance.Config.Volumes.TryGetValue(key, out config);
+        if (Instance != null) return Instance.Config.Volumes.TryGetValue(key, out config);
+        
+        config = null;
+        return false;
     }
     
     /// <summary>
@@ -79,6 +85,8 @@ public class KeepItDownPlugin : BaseUnityPlugin {
     /// <param name="volumeSetter">An action to set the raw volume.</param>
     /// <returns>Whether or not the binding was successfully created.</returns>
     public static bool Bind(string key, GameObject gameObject, float baseVolume, Action<float> volumeSetter) {
+        if (Instance == null) return false;
+        
         if (!TryGetConfig(key, out var volumeConfig)) {
             Instance.Log.LogWarning($"Trying to bind volume config for {key}, but it doesn't exist");
             return false;
@@ -115,6 +123,8 @@ public class KeepItDownPlugin : BaseUnityPlugin {
     /// <param name="gameObject">The target GameObject.</param>
     /// <returns>Whether or not the bindings were successfully removed.</returns>
     public static bool RemoveBindings(string key, GameObject gameObject) {
+        if (Instance == null) return false;
+        
         if (!TryGetConfig(key, out var volumeConfig)) {
             Instance.Log.LogWarning($"Trying to remove volume config bindings for {key}, but it doesn't exist");
             return false;
