@@ -39,6 +39,7 @@ public class KeepItDownConfig {
         }
         
         _volumes[key] = CreateVolumeConfig(cfg ?? _mainCfg, key, section);
+        KeepItDownPlugin.Instance.Log.LogDebug($"Registered {key}");
         return true;
     }
     
