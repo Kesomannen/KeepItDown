@@ -6,6 +6,7 @@
 - Added LethalConfig as a soft dependency
 - Made LethalSettings a soft dependency
 - Added TV volume config
+- Removed API (since it wasn't working anyway)
 
 ### 1.2.1 (2024-02-25)
 
