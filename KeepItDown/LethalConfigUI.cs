@@ -13,6 +13,7 @@ public static class LethalConfigUI {
         
         var volumeConfigs = KeepItDownPlugin.Instance.Config.Volumes;
         
+        /*
         LethalConfigManager.AddConfigItem(new GenericButtonConfigItem(
             "General",
             "Reset All Volumes",
@@ -20,6 +21,7 @@ public static class LethalConfigUI {
             "Reset",
             SharedUI.ResetAllVolumes
         ));
+        */
         
         foreach (var (_, volumeConfig) in volumeConfigs.OrderBy(kvp => kvp.Key)) {
             var slider = new FloatSliderConfigItem(volumeConfig.ConfigEntry, new FloatStepSliderOptions {

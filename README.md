@@ -43,7 +43,7 @@ public class CowEnemy : EnemyAI {
     [SerializeField] AudioSource _mooAudioSource;
 
     void Awake() {
-        KeepItDownPlugin.BindAudioSource("CowMoo", _mooAudioSource);
+        KeepItDownPlugin.Instance.BindAudioSource("CowMoo", _mooAudioSource);
     }
 }
 ```

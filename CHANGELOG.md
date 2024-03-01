@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0 (2024-03-01)
+
+- Added LethalConfig support (limited)
+- Added LethalConfig as a soft dependency
+- Made LethalSettings a soft dependency
+- Added TV volume config
+
 ### 1.2.1 (2024-02-25)
 
 - Added 5 volume configs:
