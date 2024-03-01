@@ -2,7 +2,7 @@
 
 Volume tuning mod for Lethal Company. Supports a wide range of Vanilla sounds, and can easily be extended by mod makers.
 
-### To get the ingame UI, please install LethalConfig or LethalSettings!
+### To get the ingame UI, please install [LethalConfig](https://thunderstore.io/c/lethal-company/p/AinaVT/LethalConfig/) or [LethalSettings](https://thunderstore.io/c/lethal-company/p/willis81808/LethalSettings/)!
  _(or both if you're feeling spicy)_ LethalConfig is more widely supported and has a nicer interface, but LethalSettings has more features.
 
 ![Mod Settings Window](https://github.com/Kesomannen/KeepItDown/assets/113015915/39229796-b2e2-4712-9d42-fd6c2d51f2dd)
