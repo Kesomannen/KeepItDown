@@ -1,9 +1,13 @@
 # Changelog
 
+### 1.3.1 (2024-03-18)
+
+- Fixed error when running without LethalSettings
+
 ## 1.3.0 (2024-03-01)
 
 - Added LethalConfig support (limited)
-- Added LethalConfig as a soft dependency
+- Added LethalConfig as a  soft dependency
 - Made LethalSettings a soft dependency
 - Added TV volume config
 - Removed API (since it wasn't working anyway)

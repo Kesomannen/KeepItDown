@@ -128,6 +128,9 @@ internal static class AudioPatches {
             case ExtensionLadderItem extensionLadderItem:
                 KeepItDownPlugin.Instance.BindAudioSource("ExtensionLadder", extensionLadderItem.ladderAudio);
                 break;
+            case StunGrenadeItem stunGrenadeItem:
+                KeepItDownPlugin.Instance.BindAudioSource("StunGrenade", stunGrenadeItem.itemAudio);
+                break;
         }
     }
     

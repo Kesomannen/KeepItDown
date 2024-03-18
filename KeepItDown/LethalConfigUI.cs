@@ -5,7 +5,7 @@ using LethalConfig.ConfigItems.Options;
 
 namespace KeepItDown; 
 
-public static class LethalConfigUI {
+internal static class LethalConfigUI {
     internal static void Init() {
         LethalConfigManager.SkipAutoGen();
         

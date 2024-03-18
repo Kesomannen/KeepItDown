@@ -53,7 +53,10 @@ public class KeepItDownPlugin : BaseUnityPlugin {
             "WhoopieCushion",
             "ExtensionLadder",
             "Turret",
-            "TV"
+            "TV",
+            "Clownhorn",
+            "OldPhone",
+            "StunGrenade"
         }, "Vanilla");
 
         var harmony = new Harmony(KeepItDownInfo.Guid);

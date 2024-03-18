@@ -1,6 +1,6 @@
 {
     "name": "KeepItDown",
-    "version_number": "1.3.0",
+    "version_number": "1.3.1",
     "website_url": "https://github.com/Kesomannen/KeepItDown",
     "description": "Volume tuning mod for various sounds in the game.",
     "dependencies": [
