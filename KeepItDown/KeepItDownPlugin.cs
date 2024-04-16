@@ -56,7 +56,10 @@ public class KeepItDownPlugin : BaseUnityPlugin {
             "TV",
             "Clownhorn",
             "OldPhone",
-            "StunGrenade"
+            "StunGrenade",
+            "OldBird",
+            "EasterEgg",
+            "SpikeTrap",
         }, "Vanilla");
 
         var harmony = new Harmony(KeepItDownInfo.Guid);

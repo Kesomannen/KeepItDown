@@ -69,6 +69,12 @@ internal static class AudioPatches {
     }
     
     [HarmonyPostfix]
+    [HarmonyPatch(typeof(SpikeRoofTrap), "Start")]
+    static void SpikeRoofTrap_Start_Postfix(SpikeRoofTrap __instance) {
+        KeepItDownPlugin.Instance.BindAudioSource("SpikeTrap", __instance.spikeTrapAudio);
+    }
+    
+    [HarmonyPostfix]
     [HarmonyPatch(typeof(Turret), "Start")]
     static void Turret_Start_Postfix(Turret __instance) {
         KeepItDownPlugin.Instance.BindAudioSources("Turret", __instance.mainAudio, __instance.berserkAudio, __instance.farAudio);
@@ -78,6 +84,21 @@ internal static class AudioPatches {
     [HarmonyPatch(typeof(JesterAI), nameof(JesterAI.Start))]
     static void JesterAI_Start_Postfix(JesterAI __instance) {
         KeepItDownPlugin.Instance.BindAudioSource("Jester", __instance.farAudio);
+    }
+    
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(RadMechAI), nameof(RadMechAI.Start))]
+    static void JesterAI_Start_Postfix(RadMechAI __instance) {
+        KeepItDownPlugin.Instance.BindAudioSources(
+            "OldBird",
+            __instance.blowtorchAudio,
+            __instance.explosionAudio,
+            __instance.LocalLRADAudio,
+            __instance.LocalLRADAudio2,
+            __instance.chargeForwardAudio,
+            __instance.flyingDistantAudio,
+            __instance.spotlightOnAudio
+        );
     }
         
     [HarmonyPostfix]
@@ -129,7 +150,8 @@ internal static class AudioPatches {
                 KeepItDownPlugin.Instance.BindAudioSource("ExtensionLadder", extensionLadderItem.ladderAudio);
                 break;
             case StunGrenadeItem stunGrenadeItem:
-                KeepItDownPlugin.Instance.BindAudioSource("StunGrenade", stunGrenadeItem.itemAudio);
+                var name = stunGrenadeItem.name.Contains("Egg") ? "EasterEgg" : "StunGrenade";
+                KeepItDownPlugin.Instance.BindAudioSource(name, stunGrenadeItem.itemAudio);
                 break;
         }
     }

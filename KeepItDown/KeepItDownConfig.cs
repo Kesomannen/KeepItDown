@@ -21,7 +21,7 @@ public class KeepItDownConfig {
             section,
             $"{key}Volume",
             50f,
-            $"Volume of {key}"
+            new ConfigDescription($"Volume of {key}", new AcceptableValueRange<float>(0f, 100f))
         ));
     }
     

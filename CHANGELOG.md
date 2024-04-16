@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.0 (2024-04-16)
+
+- Added 3 volume configs:
+  - OldBird
+  - SpikeTrap
+  - EasterEgg
+
 ### 1.3.1 (2024-03-18)
 
 - Fixed error when running without LethalSettings
